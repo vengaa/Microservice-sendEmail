@@ -1,5 +1,6 @@
 package me.felipedev.email.controller;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +17,7 @@ public class EmailController {
 	@Autowired
 	private EmailService emailService;
 	
-	@PostMapping("/send")
+	@PostMapping("/send-txt")
 	public ResponseEntity<String> sendTextEmail(
             @RequestParam String recipient,
             @RequestParam String subject,
@@ -26,5 +27,16 @@ public class EmailController {
 		return ResponseEntity.ok(response);
 		
 	}
+	
+	@PostMapping("/send-html")
+	public ResponseEntity<String> sendTextHtml(
+            @RequestParam String recipient,
+            @RequestParam String subject,
+            @RequestParam String message) {
+		
+		String response = emailService.sendMailHtml(recipient, subject, message);
+		return ResponseEntity.ok(response);
+		
+	}	
 
 }
