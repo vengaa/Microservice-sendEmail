@@ -1,88 +1,148 @@
-Microserviço de E-mail
-Este é um microsserviço Spring Boot para envio de e-mails em formato texto e HTML.
 
-Funcionalidades
-Envio de e-mails em texto simples via API REST
+# Microservice de Envio de E-mails
 
-Envio de e-mails com template HTML via API REST
+Este repositório contém uma API desenvolvida com Spring Boot que oferece funcionalidades para envio de e-mails em formatos de texto simples e HTML. A API também inclui um endpoint para realizar testes de integridade do serviço.
 
-Endpoints simples para verificação de saúde do serviço
+## Funcionalidades
 
-Suporte a container Docker
+- Envio de e-mails de texto simples.
+- Envio de e-mails em formato HTML com templates.
+- Teste de integridade da API com requisições GET e POST.
 
-Endpoints da API
-Endpoints de Health Check
-GET /api/test/getstatusapp - Verifica se a API está rodando (retorna {"status":"up"})
+## Tecnologias
 
-POST /api/test/poststatusapp - Verifica se a API está rodando (retorna {"status":"up"})
+- **Spring Boot** - Framework para construção de APIs RESTful.
+- **JavaMailSender** - Para envio de e-mails.
+- **Swagger** - Para documentação da API.
+- **Maven** - Gerenciador de dependências e construção do projeto.
 
-Endpoints de E-mail
-Enviar E-mail em Texto Puro
-Copy
-POST /email/send-txt
-Parâmetros:
-- recipient: Endereço de e-mail do destinatário
-- subject: Assunto do e-mail
-- message: Conteúdo da mensagem em texto puro
+## Endpoints
 
-Exemplo:
-http://localhost:8080/email/send-txt?recipient=usuario@exemplo.com&subject=Teste&message=Olá%20Mundo
-Enviar E-mail HTML
-Copy
-POST /email/send-html
-Parâmetros:
-- recipient: Endereço de e-mail do destinatário
-- subject: Assunto do e-mail
-- message: Conteúdo da mensagem em HTML (será inserido no template)
+### 1. Enviar E-mail de Texto
+Envie um e-mail simples em formato de texto.
 
-Exemplo:
-http://localhost:8080/email/send-html?recipient=usuario@exemplo.com&subject=Teste%20HTML&message=<p>Olá%20Mundo</p>
-Configuração
-O serviço requer a seguinte configuração no application.properties:
+- **URL:** `/email/send-txt`
+- **Método:** `POST`
+- **Parâmetros:**
+  - `recipient`: E-mail do destinatário.
+  - `subject`: Assunto do e-mail.
+  - `message`: Conteúdo do e-mail.
+  
+- **Exemplo de Requisição:**
+  
+  ```http
+  POST /email/send-txt?recipient=exemplo@dominio.com&subject=Assunto&message=Olá,%20mundo!
+  ```
 
-properties
-Copy
+- **Respostas:**
+  - **200 OK:** E-mail enviado com sucesso.
+  - **500 Internal Server Error:** Erro ao enviar o e-mail.
+
+### 2. Enviar E-mail HTML
+Envie um e-mail em formato HTML utilizando um template.
+
+- **URL:** `/email/send-html`
+- **Método:** `POST`
+- **Parâmetros:**
+  - `recipient`: E-mail do destinatário.
+  - `subject`: Assunto do e-mail.
+  - `message`: Conteúdo da mensagem em HTML.
+
+- **Exemplo de Requisição:**
+
+  ```http
+  POST /email/send-html?recipient=exemplo@dominio.com&subject=Teste%20HTML&message=Esta%20é%20uma%20mensagem%20de%20teste
+  ```
+
+- **Respostas:**
+  - **200 OK:** E-mail HTML enviado com sucesso.
+  - **500 Internal Server Error:** Erro ao enviar o e-mail.
+
+### 3. Teste de Integridade da API (GET)
+Verifica se a API está funcionando corretamente.
+
+- **URL:** `/api/test/getstatusapp`
+- **Método:** `GET`
+
+- **Resposta:**
+  ```json
+  {
+    "status": "up"
+  }
+  ```
+
+### 4. Teste de Integridade da API (POST)
+Verifica se a API está funcionando corretamente com uma requisição POST.
+
+- **URL:** `/api/test/poststatusapp`
+- **Método:** `POST`
+
+- **Resposta:**
+  ```json
+  {
+    "status": "up"
+  }
+  ```
+
+## Configuração
+
+### Configurações do E-mail
+No arquivo `application.properties`, você precisa configurar as credenciais do e-mail e o servidor SMTP:
+
+```properties
 spring.mail.host=smtp.gmail.com
 spring.mail.port=587
-spring.mail.username=seu-email@gmail.com
-spring.mail.password=sua-senha-de-app
+spring.mail.username=seuemail@gmail.com
+spring.mail.password=suasenha
 spring.mail.properties.mail.smtp.auth=true
 spring.mail.properties.mail.smtp.starttls.enable=true
-Observação: Para Gmail, você precisará gerar uma Senha de App se estiver usando 2FA.
+```
 
-Templates HTML
-A funcionalidade de e-mail HTML usa um arquivo de template localizado em:
-src/main/resources/template-email.html
+### Docker
+Este projeto inclui um `Dockerfile` para facilitar a construção e o deployment do serviço em containers Docker.
 
-O template deve conter os placeholders:
+Para construir a imagem Docker, use o seguinte comando:
 
-#{nome} - Será substituído pelo e-mail do destinatário
-
-#{message} - Será substituído pelo conteúdo da mensagem
-
-Suporte Docker
-O projeto inclui um Dockerfile multi-estágio que:
-
-Usa JDK 21 para construir a aplicação
-
-Cria uma imagem leve de runtime com JRE 21
-
-Para construir e executar:
-
-bash
-Copy
+```bash
 docker build -t email-service .
+```
+
+E para rodar a aplicação em um container:
+
+```bash
 docker run -p 8080:8080 email-service
-Dependências
-Spring Boot
+```
 
-Spring Mail
+A aplicação estará disponível na porta `8080`.
 
-JavaMail
+## Como Rodar Localmente
 
-Observações de Segurança
-A API inclui anotações @CrossOrigin permitindo requisições de qualquer origem
+1. Clone o repositório:
+   ```bash
+   git clone https://github.com/vengaa/Microservice-sendEmail.git
+   cd Microservice-sendEmail
+   ```
 
-Considere adicionar configuração CORS adequada para produção
+2. Compile o projeto:
+   ```bash
+   mvn clean install
+   ```
 
-Garanta que as credenciais de e-mail estejam adequadamente protegidas e não commitadas no versionamento
+3. Execute o aplicativo:
+   ```bash
+   mvn spring-boot:run
+   ```
+
+4. A API estará rodando em `http://localhost:8080`.
+
+## Swagger
+
+A documentação da API está disponível em Swagger, acessível através de `http://localhost:8080/swagger-ui.html`.
+
+## Contribuições
+
+Contribuições são bem-vindas! Se você deseja adicionar novas funcionalidades ou corrigir problemas, por favor, faça um fork do repositório, crie uma nova branch e envie um pull request.
+
+## Licença
+
+Distribuído sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
