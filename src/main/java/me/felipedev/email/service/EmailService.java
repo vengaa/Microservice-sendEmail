@@ -22,7 +22,7 @@ public class EmailService {
 	@Autowired
 	private JavaMailSender javaMailSender;
 	
-//	http://localhost:8080/email/send-txt?recipient=luisfelipeadm01@gmail.com&subject=Assunto&message=Olá,%20mundo!
+//	http://localhost:8080/email/send-txt?recipient=ynexus22@gmail.com.com&subject=Assunto&message=Olá,%20mundo!
 	public String sendMailText(String recipient, String subject, String message) {
 		try {
 			SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
@@ -38,6 +38,7 @@ public class EmailService {
 		}
 	}
 	
+//	http://localhost:8080/email/send-html?recipient=ynexus22@gmail.com&subject=Teste%20HTML&message=Esta%20é%20uma%20mensagem%20de%20teste	
 	public String sendMailHtml(String recipient, String subject, String messageContent) {
 	    try {
 	        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
