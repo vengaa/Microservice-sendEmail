@@ -1,16 +1,18 @@
-FROM ubuntu:latest AS build
+# Build stage
+FROM eclipse-temurin:21-jdk-jammy AS build
 
-RUN apt-get update
-RUN apt-get install openjdk-21-jdk -y
-COPY . .
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
 
-RUN apt-get install maven -y
-RUN mvn clean install 
+RUN apt-get update && apt-get install -y maven && \
+    mvn clean install -DskipTests
 
-FROM openjdk:17-jdk-slim
-
+# Runtime stage
+FROM eclipse-temurin:21-jre-jammy 
+WORKDIR /app
 EXPOSE 8080
 
-COPY --from=build /target/email-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build /app/target/email-0.0.1-SNAPSHOT.jar app.jar
 
-ENTRYPOINT [ "java", "-jar", "app.jar" ]
+ENTRYPOINT ["java", "-jar", "app.jar"]
