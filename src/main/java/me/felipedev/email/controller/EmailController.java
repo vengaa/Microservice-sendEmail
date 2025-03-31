@@ -19,7 +19,7 @@ public class EmailController {
     @Autowired
     private EmailService emailService;
 
-    @Operation(summary = "Enviar e-mail de texto", description = "Envia um e-mail simples em formato de texto puro.")
+    @Operation(summary = "Enviar e-mail de texto", description = "Envia um e-mail simples em formato de texto.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "E-mail enviado com sucesso"),
         @ApiResponse(responseCode = "500", description = "Erro ao enviar o e-mail")
